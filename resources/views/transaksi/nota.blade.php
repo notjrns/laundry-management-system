@@ -33,10 +33,23 @@
     $waUrl = $hp ? 'https://wa.me/' . $hp . '?text=' . rawurlencode($pesan) : null;
 @endphp
 
+@push('styles')
+<style>
+    @media print {
+        .sidebar, .topbar, .no-print { display: none !important; }
+        .content { margin-left: 0 !important; }
+        main.p-4 { padding: 0 !important; }
+        body { background: #fff !important; }
+        .nota-print .card { box-shadow: none !important; border: none !important; }
+        .nota-print .col-md-7 { max-width: 100% !important; flex: 0 0 100% !important; }
+    }
+</style>
+@endpush
+
 @section('content')
-    <div class="row justify-content-center">
+    <div class="row justify-content-center nota-print">
         <div class="col-md-7">
-            <div class="alert alert-success">
+            <div class="alert alert-success no-print">
                 <i class="bi bi-check-circle"></i> Transaksi tersimpan. Berikut notanya — bisa langsung dikirim ke WhatsApp pelanggan.
             </div>
 
@@ -58,7 +71,7 @@
                     <hr>
                     <p class="text-center small mb-0">Terima kasih telah menggunakan jasa kami 🙏</p>
                 </div>
-                <div class="card-footer bg-white d-flex gap-2 flex-wrap">
+                <div class="card-footer bg-white d-flex gap-2 flex-wrap no-print">
                     @if ($waUrl)
                         <a href="{{ $waUrl }}" target="_blank" class="btn btn-success">
                             <i class="bi bi-whatsapp"></i> Kirim Nota via WhatsApp
