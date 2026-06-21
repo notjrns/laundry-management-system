@@ -26,6 +26,7 @@
                         <th>Nama</th>
                         <th>Jabatan</th>
                         <th>No. HP</th>
+                        <th>Alamat</th>
                         <th>Tgl Masuk</th>
                         <th>Status</th>
                         <th class="text-end">Aksi</th>
@@ -37,6 +38,7 @@
                             <td class="fw-semibold">{{ $kar->nama }}</td>
                             <td>{{ $kar->jabatan ?? '-' }}</td>
                             <td>{{ $kar->no_hp ?? '-' }}</td>
+                            <td>{{ $kar->alamat ?? '-' }}</td>
                             <td>{{ $kar->tanggal_masuk ? $kar->tanggal_masuk->format('d/m/Y') : '-' }}</td>
                             <td>
                                 <span class="badge text-bg-{{ $kar->status === 'aktif' ? 'success' : 'secondary' }}">
@@ -54,7 +56,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="6" class="text-center text-muted py-4">Belum ada data karyawan.</td></tr>
+                        <tr><td colspan="7" class="text-center text-muted py-4">Belum ada data karyawan.</td></tr>
                     @endforelse
                 </tbody>
             </table>
