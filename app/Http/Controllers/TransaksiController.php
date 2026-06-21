@@ -55,8 +55,17 @@ class TransaksiController extends Controller
 
         $transaksi = Transaksi::create($data);
 
-        return redirect()->route('transaksi.nota', $transaksi)
+        $redirect = redirect()->route('transaksi.nota', $transaksi)
             ->with('success', 'Transaksi berhasil disimpan. Nota siap dikirim.');
+
+        // Peringatkan kalau transaksi belum dapat kolom rak (semua rak penuh)
+        if ($transaksi->status !== 'diambil'
+            && \App\Models\RakKolom::exists()
+            && ! \App\Models\RakKolom::where('transaksi_id', $transaksi->id)->exists()) {
+            $redirect->with('error', 'Catatan: semua kolom rak penuh, transaksi ini belum mendapat kolom. Kosongkan/ tambah kolom rak.');
+        }
+
+        return $redirect;
     }
 
     public function show(Transaksi $transaksi)

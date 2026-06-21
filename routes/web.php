@@ -6,7 +6,6 @@ use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LayananController;
 use App\Http\Controllers\RakController;
-use App\Http\Controllers\RakKolomController;
 use App\Http\Controllers\TransaksiController;
 use Illuminate\Support\Facades\Route;
 
@@ -30,11 +29,8 @@ Route::middleware('auth')->group(function () {
     Route::get('transaksi/{transaksi}/nota', [TransaksiController::class, 'nota'])->name('transaksi.nota');
     Route::resource('transaksi', TransaksiController::class);
 
-    // Rak (kelola rak + kolom)
+    // Rak (kolom terisi otomatis dari transaksi, lihat App\Observers\TransaksiObserver)
     Route::resource('rak', RakController::class);
-    Route::get('kolom/{rakKolom}/edit', [RakKolomController::class, 'edit'])->name('kolom.edit');
-    Route::put('kolom/{rakKolom}', [RakKolomController::class, 'update'])->name('kolom.update');
-    Route::delete('kolom/{rakKolom}', [RakKolomController::class, 'destroy'])->name('kolom.destroy');
 
     // Atur layanan / paket laundry
     Route::resource('layanan', LayananController::class)->except('show');

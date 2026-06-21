@@ -13,6 +13,11 @@
         </div>
     </div>
 
+    <div class="alert alert-info d-flex align-items-center gap-2">
+        <i class="bi bi-info-circle"></i>
+        <span>Rak terisi <strong>otomatis</strong> dari transaksi. Order masuk → menempati kolom kosong. Saat status jadi <strong>"Diambil"</strong> → kolom otomatis kosong kembali.</span>
+    </div>
+
     <div class="row g-3">
         @foreach ($rak->koloms as $kolom)
             <div class="col-md-3 col-sm-6">
@@ -37,18 +42,13 @@
                             <p class="text-muted text-center my-3 mb-0"><i class="bi bi-inbox fs-3 d-block"></i> Belum ada isi</p>
                         @endif
                     </div>
-                    <div class="card-footer bg-white d-flex gap-1">
-                        @if ($kolom->terisi)
-                            <a href="{{ route('kolom.edit', $kolom) }}" class="btn btn-sm btn-outline-primary flex-fill"><i class="bi bi-pencil"></i> Edit</a>
-                            <form method="POST" action="{{ route('kolom.destroy', $kolom) }}" class="flex-fill"
-                                onsubmit="return confirm('Kosongkan isi kolom ini?')">
-                                @csrf @method('DELETE')
-                                <button class="btn btn-sm btn-outline-danger w-100"><i class="bi bi-x-circle"></i> Kosongkan</button>
-                            </form>
-                        @else
-                            <a href="{{ route('kolom.edit', $kolom) }}" class="btn btn-sm btn-success w-100"><i class="bi bi-plus-circle"></i> Isi Kolom</a>
-                        @endif
-                    </div>
+                    @if ($kolom->terisi && $kolom->transaksi)
+                        <div class="card-footer bg-white">
+                            <a href="{{ route('transaksi.show', $kolom->transaksi) }}" class="btn btn-sm btn-outline-primary w-100">
+                                <i class="bi bi-eye"></i> Lihat Transaksi ({{ $kolom->transaksi->kode }})
+                            </a>
+                        </div>
+                    @endif
                 </div>
             </div>
         @endforeach

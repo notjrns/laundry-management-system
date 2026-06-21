@@ -10,7 +10,7 @@ Dibuat dengan **Laravel 11 + MySQL + Bootstrap 5**.
 3. **Dashboard** — statistik transaksi, pendapatan, karyawan
 4. **Tambah Transaksi** — sekalian simpan data pelanggan, total otomatis (jumlah × harga), estimasi selesai otomatis dari paket, metode bayar (cash/transfer), **kirim nota via WhatsApp**
 5. **Data Transaksi** — daftar, cari, edit, hapus
-6. **Rak** — buat rak (otomatis sejumlah kolom), isi kolom dari data transaksi, edit, kosongkan isi kolom
+6. **Rak** — buat rak (otomatis sejumlah kolom). Kolom **terisi otomatis** saat ada transaksi baru, dan **kosong otomatis** saat status transaksi jadi "diambil" (tanpa input manual)
 7. **Atur Layanan** — admin kelola paket layanan (nama, satuan kg/pcs, estimasi jam/hari, harga)
 8. **Data Karyawan** — tambah, edit, hapus
 9. **Laporan** — filter (hari ini / minggu / bulan / rentang tanggal) + **export PDF**
