@@ -12,11 +12,12 @@
                 <tr><th width="200">Nama Pelanggan</th><td>{{ $transaksi->nama_pelanggan }}</td></tr>
                 <tr><th>No. HP</th><td>{{ $transaksi->no_hp ?? '-' }}</td></tr>
                 <tr><th>Alamat</th><td>{{ $transaksi->alamat ?? '-' }}</td></tr>
+                @php $satuan = strtoupper($transaksi->layanan->satuan ?? 'kg'); @endphp
                 <tr><th>Layanan</th><td>{{ $transaksi->layanan->nama ?? '-' }}</td></tr>
-                <tr><th>Berat</th><td>{{ rtrim(rtrim(number_format($transaksi->berat, 2), '0'), '.') }} kg</td></tr>
-                <tr><th>Harga / kg</th><td>Rp {{ number_format($transaksi->harga_satuan, 0, ',', '.') }}</td></tr>
+                <tr><th>Jumlah</th><td>{{ rtrim(rtrim(number_format($transaksi->berat, 2), '0'), '.') }} {{ $satuan }}</td></tr>
+                <tr><th>Harga / {{ $satuan }}</th><td>Rp {{ number_format($transaksi->harga_satuan, 0, ',', '.') }}</td></tr>
                 <tr><th>Total</th><td class="fw-bold text-success">Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}</td></tr>
-                <tr><th>Pembayaran</th><td>{{ $transaksi->status_bayar === 'lunas' ? 'Lunas' : 'Belum Bayar' }}</td></tr>
+                <tr><th>Pembayaran</th><td>{{ $transaksi->status_bayar === 'lunas' ? 'Lunas' : 'Belum Bayar' }} &middot; {{ ucfirst($transaksi->metode_bayar) }}</td></tr>
                 <tr><th>Tanggal Masuk</th><td>{{ $transaksi->tanggal_masuk->format('d/m/Y') }}</td></tr>
                 <tr><th>Estimasi Selesai</th><td>{{ $transaksi->estimasi_selesai ? $transaksi->estimasi_selesai->format('d/m/Y H:i') : '-' }}</td></tr>
                 <tr><th>Catatan</th><td>{{ $transaksi->catatan ?? '-' }}</td></tr>

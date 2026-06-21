@@ -41,15 +41,19 @@
                     <select name="layanan_id" id="layanan_id" class="form-select" required>
                         <option value="">-- Pilih Layanan --</option>
                         @foreach ($layanans as $layanan)
-                            <option value="{{ $layanan->id }}" data-harga="{{ $layanan->harga }}"
+                            <option value="{{ $layanan->id }}"
+                                data-harga="{{ $layanan->harga }}"
+                                data-satuan="{{ $layanan->satuan }}"
+                                data-estimasi-nilai="{{ $layanan->estimasi_nilai }}"
+                                data-estimasi-satuan="{{ $layanan->estimasi_satuan }}"
                                 @selected(old('layanan_id', $transaksi->layanan_id ?? '') == $layanan->id)>
-                                {{ $layanan->nama }} (Rp {{ number_format($layanan->harga, 0, ',', '.') }}/{{ $layanan->satuan }})
+                                {{ $layanan->labelLengkap() }}
                             </option>
                         @endforeach
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Berat (kg) <span class="text-danger">*</span></label>
+                    <label class="form-label">Jumlah (<span id="satuan_label">Kg</span>) <span class="text-danger">*</span></label>
                     <input type="number" step="0.1" min="0.1" name="berat" id="berat" class="form-control"
                         value="{{ old('berat', $transaksi->berat ?? '') }}" required>
                 </div>
@@ -72,11 +76,12 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Estimasi Selesai</label>
-                    <input type="datetime-local" name="estimasi_selesai" class="form-control"
+                    <input type="datetime-local" name="estimasi_selesai" id="estimasi_selesai" class="form-control"
                         value="{{ old('estimasi_selesai', isset($transaksi) && $transaksi->estimasi_selesai ? $transaksi->estimasi_selesai->format('Y-m-d\TH:i') : '') }}">
+                    <div class="form-text">Otomatis terisi dari estimasi paket, bisa diubah manual.</div>
                 </div>
-                <div class="row">
-                    <div class="col-6 mb-0">
+                <div class="row g-2">
+                    <div class="col-md-4 mb-0">
                         <label class="form-label">Status</label>
                         <select name="status" class="form-select">
                             @foreach (['diproses' => 'Diproses', 'selesai' => 'Selesai', 'diambil' => 'Diambil'] as $val => $label)
@@ -84,11 +89,19 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-6 mb-0">
+                    <div class="col-md-4 mb-0">
                         <label class="form-label">Pembayaran</label>
                         <select name="status_bayar" class="form-select">
                             @foreach (['belum' => 'Belum Bayar', 'lunas' => 'Lunas'] as $val => $label)
                                 <option value="{{ $val }}" @selected(old('status_bayar', $transaksi->status_bayar ?? 'belum') == $val)>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-0">
+                        <label class="form-label">Metode Bayar</label>
+                        <select name="metode_bayar" class="form-select">
+                            @foreach (['cash' => 'Cash', 'transfer' => 'Transfer'] as $val => $label)
+                                <option value="{{ $val }}" @selected(old('metode_bayar', $transaksi->metode_bayar ?? 'cash') == $val)>{{ $label }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -117,17 +130,57 @@
     const selLayanan = document.getElementById('layanan_id');
     const inputBerat = document.getElementById('berat');
     const totalPreview = document.getElementById('total_preview');
+    const satuanLabel = document.getElementById('satuan_label');
+    const inputEstimasi = document.getElementById('estimasi_selesai');
 
-    function hitungTotal() {
-        const opt = selLayanan.options[selLayanan.selectedIndex];
-        const harga = opt ? parseFloat(opt.dataset.harga || 0) : 0;
-        const berat = parseFloat(inputBerat.value || 0);
-        const total = Math.round(harga * berat);
-        totalPreview.textContent = 'Rp ' + total.toLocaleString('id-ID');
+    function optAktif() {
+        return selLayanan.options[selLayanan.selectedIndex];
     }
 
-    selLayanan.addEventListener('change', hitungTotal);
+    function hitungTotal() {
+        const opt = optAktif();
+        const harga = opt ? parseFloat(opt.dataset.harga || 0) : 0;
+        const berat = parseFloat(inputBerat.value || 0);
+        totalPreview.textContent = 'Rp ' + Math.round(harga * berat).toLocaleString('id-ID');
+    }
+
+    function updateSatuanLabel() {
+        const opt = optAktif();
+        const satuan = opt && opt.dataset.satuan ? opt.dataset.satuan : 'kg';
+        satuanLabel.textContent = satuan.toUpperCase();
+    }
+
+    // Format Date -> "YYYY-MM-DDTHH:MM" (waktu lokal)
+    function toLocalInput(d) {
+        const pad = (n) => String(n).padStart(2, '0');
+        return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) +
+            'T' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+    }
+
+    function isiEstimasiOtomatis() {
+        const opt = optAktif();
+        if (!opt || !opt.value) return;
+        const nilai = parseInt(opt.dataset.estimasiNilai || 0);
+        const satuan = opt.dataset.estimasiSatuan; // jam / hari
+        if (!nilai) return;
+        const d = new Date();
+        if (satuan === 'jam') {
+            d.setHours(d.getHours() + nilai);
+        } else {
+            d.setDate(d.getDate() + nilai);
+        }
+        inputEstimasi.value = toLocalInput(d);
+    }
+
+    selLayanan.addEventListener('change', function () {
+        hitungTotal();
+        updateSatuanLabel();
+        isiEstimasiOtomatis();
+    });
     inputBerat.addEventListener('input', hitungTotal);
+
+    // Inisialisasi saat halaman dibuka (mis. halaman edit)
     hitungTotal();
+    updateSatuanLabel();
 </script>
 @endpush

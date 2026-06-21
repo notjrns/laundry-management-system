@@ -11,6 +11,7 @@
     }
 
     $berat = rtrim(rtrim(number_format($transaksi->berat, 2), '0'), '.');
+    $satuan = strtoupper($transaksi->layanan->satuan ?? 'kg');
 
     // Susun isi pesan nota
     $baris = [
@@ -21,10 +22,10 @@
         "Nama     : " . $transaksi->nama_pelanggan,
         "---------------------------------",
         "Layanan  : " . ($transaksi->layanan->nama ?? '-'),
-        "Berat    : " . $berat . " kg",
-        "Harga/kg : Rp " . number_format($transaksi->harga_satuan, 0, ',', '.'),
+        "Jumlah   : " . $berat . " " . $satuan,
+        "Harga    : Rp " . number_format($transaksi->harga_satuan, 0, ',', '.') . " /" . $satuan,
         "*TOTAL   : Rp " . number_format($transaksi->total_harga, 0, ',', '.') . "*",
-        "Bayar    : " . ($transaksi->status_bayar === 'lunas' ? 'LUNAS' : 'BELUM BAYAR'),
+        "Bayar    : " . ($transaksi->status_bayar === 'lunas' ? 'LUNAS' : 'BELUM BAYAR') . " (" . ucfirst($transaksi->metode_bayar) . ")",
         "Status   : " . ucfirst($transaksi->status),
         "Estimasi : " . ($transaksi->estimasi_selesai ? $transaksi->estimasi_selesai->format('d/m/Y H:i') : '-'),
         "---------------------------------",
@@ -50,11 +51,11 @@
                     <div class="d-flex justify-content-between"><span>Tanggal</span><span>{{ $transaksi->tanggal_masuk->format('d/m/Y') }}</span></div>
                     <div class="d-flex justify-content-between"><span>Nama</span><span>{{ $transaksi->nama_pelanggan }}</span></div>
                     <hr>
-                    <div class="d-flex justify-content-between"><span>{{ $transaksi->layanan->nama ?? '-' }}</span><span>{{ $berat }} kg</span></div>
-                    <div class="d-flex justify-content-between"><span>Harga / kg</span><span>Rp {{ number_format($transaksi->harga_satuan, 0, ',', '.') }}</span></div>
+                    <div class="d-flex justify-content-between"><span>{{ $transaksi->layanan->nama ?? '-' }}</span><span>{{ $berat }} {{ $satuan }}</span></div>
+                    <div class="d-flex justify-content-between"><span>Harga / {{ $satuan }}</span><span>Rp {{ number_format($transaksi->harga_satuan, 0, ',', '.') }}</span></div>
                     <hr>
                     <div class="d-flex justify-content-between fw-bold fs-5"><span>TOTAL</span><span>Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}</span></div>
-                    <div class="d-flex justify-content-between"><span>Pembayaran</span><span>{{ $transaksi->status_bayar === 'lunas' ? 'LUNAS' : 'BELUM BAYAR' }}</span></div>
+                    <div class="d-flex justify-content-between"><span>Pembayaran</span><span>{{ $transaksi->status_bayar === 'lunas' ? 'LUNAS' : 'BELUM BAYAR' }} ({{ ucfirst($transaksi->metode_bayar) }})</span></div>
                     <div class="d-flex justify-content-between"><span>Estimasi</span><span>{{ $transaksi->estimasi_selesai ? $transaksi->estimasi_selesai->format('d/m/Y H:i') : '-' }}</span></div>
                     <hr>
                     <p class="text-center small mb-0">Terima kasih telah menggunakan jasa kami 🙏</p>

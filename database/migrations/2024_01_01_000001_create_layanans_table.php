@@ -10,9 +10,11 @@ return new class extends Migration
     {
         Schema::create('layanans', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');                 // contoh: Cuci Kering, Cuci Setrika
-            $table->unsignedInteger('harga');       // harga per kg (Rupiah)
-            $table->string('satuan')->default('kg');
+            $table->string('nama');                          // contoh: Cuci Gosok, Cuci Lipat
+            $table->enum('satuan', ['kg', 'pcs'])->default('kg');
+            $table->unsignedInteger('estimasi_nilai')->default(1);   // angka estimasi (mis. 3)
+            $table->enum('estimasi_satuan', ['jam', 'hari'])->default('hari'); // satuan waktu
+            $table->unsignedInteger('harga');                // harga per kg / pcs (Rupiah)
             $table->timestamps();
         });
     }

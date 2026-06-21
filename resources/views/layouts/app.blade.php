@@ -37,6 +37,7 @@
         <a href="{{ route('transaksi.create') }}" class="{{ request()->routeIs('transaksi.create') ? 'active' : '' }}"><i class="bi bi-plus-circle"></i> Tambah Transaksi</a>
         <a href="{{ route('transaksi.index') }}" class="{{ request()->routeIs('transaksi.index','transaksi.show','transaksi.edit') ? 'active' : '' }}"><i class="bi bi-receipt"></i> Data Transaksi</a>
         <a href="{{ route('rak.index') }}" class="{{ request()->routeIs('rak.*','kolom.*') ? 'active' : '' }}"><i class="bi bi-grid-3x3-gap"></i> Rak</a>
+        <a href="{{ route('layanan.index') }}" class="{{ request()->routeIs('layanan.*') ? 'active' : '' }}"><i class="bi bi-tags"></i> Atur Layanan</a>
         <a href="{{ route('karyawan.index') }}" class="{{ request()->routeIs('karyawan.*') ? 'active' : '' }}"><i class="bi bi-people"></i> Data Karyawan</a>
         <a href="{{ route('laporan.index') }}" class="{{ request()->routeIs('laporan.*') ? 'active' : '' }}"><i class="bi bi-file-earmark-bar-graph"></i> Laporan</a>
     </nav>

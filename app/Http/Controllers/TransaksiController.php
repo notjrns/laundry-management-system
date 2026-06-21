@@ -48,6 +48,11 @@ class TransaksiController extends Controller
         $data['total_harga'] = (int) round($layanan->harga * (float) $data['berat']);
         $data['kode'] = $this->generateKode();
 
+        // Estimasi selesai otomatis dari paket bila admin tidak mengisinya
+        if (empty($data['estimasi_selesai'])) {
+            $data['estimasi_selesai'] = $this->hitungEstimasi($layanan);
+        }
+
         $transaksi = Transaksi::create($data);
 
         return redirect()->route('transaksi.nota', $transaksi)
@@ -110,8 +115,21 @@ class TransaksiController extends Controller
             'estimasi_selesai' => ['nullable', 'date'],
             'status' => ['required', 'in:diproses,selesai,diambil'],
             'status_bayar' => ['required', 'in:belum,lunas'],
+            'metode_bayar' => ['required', 'in:cash,transfer'],
             'catatan' => ['nullable', 'string'],
         ]);
+    }
+
+    /**
+     * Hitung estimasi selesai dari sekarang + estimasi paket layanan.
+     */
+    private function hitungEstimasi(Layanan $layanan): Carbon
+    {
+        $now = Carbon::now();
+
+        return $layanan->estimasi_satuan === 'jam'
+            ? $now->addHours($layanan->estimasi_nilai)
+            : $now->addDays($layanan->estimasi_nilai);
     }
 
     /**

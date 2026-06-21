@@ -10,18 +10,19 @@ return new class extends Migration
     {
         Schema::create('transaksis', function (Blueprint $table) {
             $table->id();
-            $table->string('kode')->unique();           // nomor nota, contoh: TRX-20260621-0001
+            $table->string('kode')->unique();
             $table->string('nama_pelanggan');
             $table->string('no_hp')->nullable();
             $table->text('alamat')->nullable();
             $table->foreignId('layanan_id')->constrained('layanans')->cascadeOnUpdate()->restrictOnDelete();
-            $table->decimal('berat', 8, 2)->default(0);  // dalam kg
-            $table->unsignedInteger('harga_satuan')->default(0); // harga/kg saat transaksi
-            $table->unsignedInteger('total_harga')->default(0);  // berat * harga_satuan
+            $table->decimal('berat', 8, 2)->default(0);
+            $table->unsignedInteger('harga_satuan')->default(0);
+            $table->unsignedInteger('total_harga')->default(0);
             $table->date('tanggal_masuk');
             $table->dateTime('estimasi_selesai')->nullable();
             $table->enum('status', ['diproses', 'selesai', 'diambil'])->default('diproses');
             $table->enum('status_bayar', ['belum', 'lunas'])->default('belum');
+            $table->enum('metode_bayar', ['cash', 'transfer'])->default('cash');
             $table->text('catatan')->nullable();
             $table->timestamps();
         });

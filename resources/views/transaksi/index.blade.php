@@ -49,13 +49,14 @@
                             <td class="fw-semibold">{{ $trx->kode }}</td>
                             <td>{{ $trx->nama_pelanggan }}<br><small class="text-muted">{{ $trx->no_hp }}</small></td>
                             <td>{{ $trx->layanan->nama ?? '-' }}</td>
-                            <td>{{ rtrim(rtrim(number_format($trx->berat, 2), '0'), '.') }} kg</td>
+                            <td>{{ rtrim(rtrim(number_format($trx->berat, 2), '0'), '.') }} {{ strtoupper($trx->layanan->satuan ?? 'kg') }}</td>
                             <td>Rp {{ number_format($trx->total_harga, 0, ',', '.') }}</td>
                             <td><span class="badge text-bg-{{ $trx->statusBadge() }}">{{ ucfirst($trx->status) }}</span></td>
                             <td>
                                 <span class="badge text-bg-{{ $trx->status_bayar === 'lunas' ? 'success' : 'secondary' }}">
                                     {{ $trx->status_bayar === 'lunas' ? 'Lunas' : 'Belum' }}
                                 </span>
+                                <br><small class="text-muted">{{ ucfirst($trx->metode_bayar) }}</small>
                             </td>
                             <td>{{ $trx->tanggal_masuk->format('d/m/Y') }}</td>
                             <td class="text-end">

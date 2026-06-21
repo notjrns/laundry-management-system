@@ -52,7 +52,7 @@
                     <td>{{ $trx->kode }}</td>
                     <td>{{ $trx->nama_pelanggan }}</td>
                     <td>{{ $trx->layanan->nama ?? '-' }}</td>
-                    <td>{{ rtrim(rtrim(number_format($trx->berat, 2), '0'), '.') }} kg</td>
+                    <td>{{ rtrim(rtrim(number_format($trx->berat, 2), '0'), '.') }} {{ strtoupper($trx->layanan->satuan ?? 'kg') }}</td>
                     <td class="text-end">{{ number_format($trx->total_harga, 0, ',', '.') }}</td>
                     <td>{{ ucfirst($trx->status) }}</td>
                     <td>{{ $trx->status_bayar === 'lunas' ? 'Lunas' : 'Belum' }}</td>

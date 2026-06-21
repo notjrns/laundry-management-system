@@ -8,11 +8,12 @@ Dibuat dengan **Laravel 11 + MySQL + Bootstrap 5**.
 1. **Home** — halaman selamat datang + pilihan Login / Register
 2. **Register & Login** — akses khusus admin
 3. **Dashboard** — statistik transaksi, pendapatan, karyawan
-4. **Tambah Transaksi** — sekalian simpan data pelanggan, total otomatis (berat × harga/kg), **kirim nota via WhatsApp**
+4. **Tambah Transaksi** — sekalian simpan data pelanggan, total otomatis (jumlah × harga), estimasi selesai otomatis dari paket, metode bayar (cash/transfer), **kirim nota via WhatsApp**
 5. **Data Transaksi** — daftar, cari, edit, hapus
 6. **Rak** — buat rak (otomatis sejumlah kolom), isi kolom dari data transaksi, edit, kosongkan isi kolom
-7. **Data Karyawan** — tambah, edit, hapus
-8. **Laporan** — filter (hari ini / minggu / bulan / rentang tanggal) + **export PDF**
+7. **Atur Layanan** — admin kelola paket layanan (nama, satuan kg/pcs, estimasi jam/hari, harga)
+8. **Data Karyawan** — tambah, edit, hapus
+9. **Laporan** — filter (hari ini / minggu / bulan / rentang tanggal) + **export PDF**
 
 ---
 
