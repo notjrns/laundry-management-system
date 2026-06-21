@@ -49,7 +49,7 @@ class RakController extends Controller
         $data = $this->validateData($request);
 
         $rak->update($data);
-        $rak->generateKolom(); // sinkronkan jumlah kolom
+        $rak->generateKolom();
 
         return redirect()->route('rak.show', $rak)->with('success', 'Rak berhasil diperbarui.');
     }

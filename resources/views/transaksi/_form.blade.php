@@ -150,7 +150,6 @@
         satuanLabel.textContent = satuan.toUpperCase();
     }
 
-    // Format Date -> "YYYY-MM-DDTHH:MM" (waktu lokal)
     function toLocalInput(d) {
         const pad = (n) => String(n).padStart(2, '0');
         return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) +
@@ -161,7 +160,7 @@
         const opt = optAktif();
         if (!opt || !opt.value) return;
         const nilai = parseInt(opt.dataset.estimasiNilai || 0);
-        const satuan = opt.dataset.estimasiSatuan; // jam / hari
+        const satuan = opt.dataset.estimasiSatuan;
         if (!nilai) return;
         const d = new Date();
         if (satuan === 'jam') {
@@ -179,7 +178,6 @@
     });
     inputBerat.addEventListener('input', hitungTotal);
 
-    // Inisialisasi saat halaman dibuka (mis. halaman edit)
     hitungTotal();
     updateSatuanLabel();
 </script>

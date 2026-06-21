@@ -61,11 +61,6 @@ class LaporanController extends Controller
         return $pdf->download($namaFile);
     }
 
-    /**
-     * Tentukan rentang tanggal dari pilihan periode / tanggal custom.
-     *
-     * @return array{0: Carbon, 1: Carbon, 2: string}
-     */
     private function resolveRange(Request $request): array
     {
         $periode = $request->input('periode', 'hari_ini');
@@ -90,9 +85,6 @@ class LaporanController extends Controller
         };
     }
 
-    /**
-     * @return array{0: Carbon, 1: Carbon, 2: string}
-     */
     private function customRange(Request $request): array
     {
         $request->validate([

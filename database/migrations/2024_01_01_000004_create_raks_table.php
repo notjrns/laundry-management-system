@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('raks', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');                       // contoh: Rak A
+            $table->string('nama');
             $table->unsignedInteger('jumlah_kolom')->default(20);
             $table->text('keterangan')->nullable();
             $table->timestamps();

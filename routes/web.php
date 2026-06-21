@@ -25,20 +25,15 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Transaksi + cetak/kirim nota
     Route::get('transaksi/{transaksi}/nota', [TransaksiController::class, 'nota'])->name('transaksi.nota');
     Route::resource('transaksi', TransaksiController::class);
 
-    // Rak (kolom terisi otomatis dari transaksi, lihat App\Observers\TransaksiObserver)
     Route::resource('rak', RakController::class);
 
-    // Atur layanan / paket laundry
     Route::resource('layanan', LayananController::class)->except('show');
 
-    // Data karyawan
     Route::resource('karyawan', KaryawanController::class);
 
-    // Laporan + export PDF
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
     Route::get('/laporan/pdf', [LaporanController::class, 'pdf'])->name('laporan.pdf');
 });

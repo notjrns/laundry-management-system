@@ -7,9 +7,6 @@ use App\Models\Transaksi;
 
 class TransaksiObserver
 {
-    /**
-     * Transaksi baru -> otomatis tempatkan ke kolom rak kosong (jika belum diambil).
-     */
     public function created(Transaksi $transaksi): void
     {
         if ($transaksi->status !== 'diambil') {
@@ -17,19 +14,14 @@ class TransaksiObserver
         }
     }
 
-    /**
-     * Transaksi diubah -> sinkronkan / pindahkan / keluarkan dari rak sesuai status.
-     */
     public function updated(Transaksi $transaksi): void
     {
-        // Sudah diambil -> keluar dari rak
         if ($transaksi->status === 'diambil') {
             $this->keluarkanDariRak($transaksi);
 
             return;
         }
 
-        // Masih aktif: pastikan ada di rak, lalu samakan datanya
         $kolom = $this->kolomMilik($transaksi);
 
         if ($kolom) {
@@ -39,9 +31,6 @@ class TransaksiObserver
         }
     }
 
-    /**
-     * Transaksi dihapus -> kosongkan kolomnya.
-     */
     public function deleted(Transaksi $transaksi): void
     {
         $this->keluarkanDariRak($transaksi);
@@ -52,9 +41,6 @@ class TransaksiObserver
         return RakKolom::where('transaksi_id', $transaksi->id)->first();
     }
 
-    /**
-     * Cari kolom kosong pertama lalu isi. Kalau semua rak penuh, dilewati.
-     */
     private function tempatkanKeRak(Transaksi $transaksi): void
     {
         $kolom = RakKolom::where('terisi', false)

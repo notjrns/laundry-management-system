@@ -41,9 +41,6 @@ class Transaksi extends Model
         return $this->belongsTo(Layanan::class);
     }
 
-    /**
-     * Label warna badge untuk status (dipakai di view).
-     */
     public function statusBadge(): string
     {
         return match ($this->status) {

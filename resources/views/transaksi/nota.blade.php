@@ -2,7 +2,6 @@
 @section('title', 'Nota Transaksi')
 
 @php
-    // Normalisasi nomor HP ke format internasional (62...) untuk link wa.me
     $hp = preg_replace('/[^0-9]/', '', (string) $transaksi->no_hp);
     if (str_starts_with($hp, '0')) {
         $hp = '62' . substr($hp, 1);
@@ -13,7 +12,6 @@
     $berat = rtrim(rtrim(number_format($transaksi->berat, 2), '0'), '.');
     $satuan = strtoupper($transaksi->layanan->satuan ?? 'kg');
 
-    // Susun isi pesan nota
     $baris = [
         "*NOTA LAUNDRY - " . config('app.name') . "*",
         "---------------------------------",

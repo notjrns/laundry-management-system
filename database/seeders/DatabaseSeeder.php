@@ -13,7 +13,6 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Akun admin default
         User::updateOrCreate(
             ['email' => 'admin@laundry.test'],
             [
@@ -22,7 +21,6 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // Daftar paket layanan (nama, satuan, estimasi nilai, estimasi satuan, harga)
         $layanans = [
             ['Cuci Gosok', 'kg', 3, 'hari', 6000],
             ['Cuci Gosok', 'kg', 2, 'hari', 7000],
@@ -49,13 +47,11 @@ class DatabaseSeeder extends Seeder
             );
         }
 
-        // Contoh karyawan
         Karyawan::firstOrCreate(
             ['nama' => 'Anis'],
             ['jabatan' => 'Kasir', 'no_hp' => '081234567890', 'status' => 'aktif', 'tanggal_masuk' => now()]
         );
 
-        // Contoh rak (otomatis dibuatkan 20 kolom)
         $rak = Rak::firstOrCreate(['nama' => 'Rak A'], ['jumlah_kolom' => 20]);
         $rak->generateKolom();
     }

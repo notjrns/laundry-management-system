@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Layanan;
+use App\Models\RakKolom;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -13,7 +14,6 @@ class TransaksiController extends Controller
     {
         $query = Transaksi::with('layanan')->latest();
 
-        // Pencarian (nama / kode / no hp)
         if ($cari = $request->input('cari')) {
             $query->where(function ($q) use ($cari) {
                 $q->where('nama_pelanggan', 'like', "%{$cari}%")
@@ -22,7 +22,6 @@ class TransaksiController extends Controller
             });
         }
 
-        // Filter status
         if ($status = $request->input('status')) {
             $query->where('status', $status);
         }
@@ -48,7 +47,6 @@ class TransaksiController extends Controller
         $data['total_harga'] = (int) round($layanan->harga * (float) $data['berat']);
         $data['kode'] = $this->generateKode();
 
-        // Estimasi selesai otomatis dari paket bila admin tidak mengisinya
         if (empty($data['estimasi_selesai'])) {
             $data['estimasi_selesai'] = $this->hitungEstimasi($layanan);
         }
@@ -58,10 +56,9 @@ class TransaksiController extends Controller
         $redirect = redirect()->route('transaksi.nota', $transaksi)
             ->with('success', 'Transaksi berhasil disimpan. Nota siap dikirim.');
 
-        // Peringatkan kalau transaksi belum dapat kolom rak (semua rak penuh)
         if ($transaksi->status !== 'diambil'
-            && \App\Models\RakKolom::exists()
-            && ! \App\Models\RakKolom::where('transaksi_id', $transaksi->id)->exists()) {
+            && RakKolom::exists()
+            && ! RakKolom::where('transaksi_id', $transaksi->id)->exists()) {
             $redirect->with('error', 'Catatan: semua kolom rak penuh, transaksi ini belum mendapat kolom. Kosongkan/ tambah kolom rak.');
         }
 
@@ -102,9 +99,6 @@ class TransaksiController extends Controller
         return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil dihapus.');
     }
 
-    /**
-     * Halaman nota + tombol kirim WhatsApp.
-     */
     public function nota(Transaksi $transaksi)
     {
         $transaksi->load('layanan');
@@ -129,9 +123,6 @@ class TransaksiController extends Controller
         ]);
     }
 
-    /**
-     * Hitung estimasi selesai dari sekarang + estimasi paket layanan.
-     */
     private function hitungEstimasi(Layanan $layanan): Carbon
     {
         $now = Carbon::now();
@@ -141,9 +132,6 @@ class TransaksiController extends Controller
             : $now->addDays($layanan->estimasi_nilai);
     }
 
-    /**
-     * Buat kode nota unik: TRX-YYYYMMDD-0001 (urut per hari).
-     */
     private function generateKode(): string
     {
         $tanggal = Carbon::today()->format('Ymd');

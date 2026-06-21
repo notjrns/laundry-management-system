@@ -38,9 +38,6 @@ class RakKolom extends Model
         return $this->belongsTo(Transaksi::class);
     }
 
-    /**
-     * Kosongkan kolom (hapus isi, bukan hapus kolomnya).
-     */
     public function kosongkan(): void
     {
         $this->update([
