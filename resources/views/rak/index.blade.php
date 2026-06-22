@@ -20,7 +20,7 @@
                         @endif
                         <div class="progress mb-3" style="height: 8px;">
                             @php $persen = $rak->koloms_count ? round($rak->terisi_count / $rak->koloms_count * 100) : 0; @endphp
-                            <div class="progress-bar" style="width: {{ $persen }}%"></div>
+                            <div class="progress-bar" @style(['width: '.$persen.'%'])></div>
                         </div>
                     </div>
                     <div class="card-footer bg-white d-flex gap-2">

@@ -14,11 +14,11 @@
                         <option value="custom" @selected($periode === 'custom')>Pilih Tanggal...</option>
                     </select>
                 </div>
-                <div class="col-md-3 box-custom" style="{{ $periode === 'custom' ? '' : 'display:none' }}">
+                <div class="col-md-3 box-custom" @style(['display:none' => $periode !== 'custom'])>
                     <label class="form-label small mb-1">Dari Tanggal</label>
                     <input type="date" name="tgl_dari" value="{{ $tgl_dari }}" class="form-control">
                 </div>
-                <div class="col-md-3 box-custom" style="{{ $periode === 'custom' ? '' : 'display:none' }}">
+                <div class="col-md-3 box-custom" @style(['display:none' => $periode !== 'custom'])>
                     <label class="form-label small mb-1">Sampai Tanggal</label>
                     <input type="date" name="tgl_sampai" value="{{ $tgl_sampai }}" class="form-control">
                 </div>
