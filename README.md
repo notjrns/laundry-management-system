@@ -3,6 +3,9 @@
 Aplikasi web untuk admin laundry: kelola transaksi, rak, karyawan, dan laporan.
 Dibuat dengan **Laravel 11 + MySQL + Bootstrap 5**.
 
+> 📚 **Mau belajar cara kerja & cara ngoding project ini dari nol?**
+> Baca materi lengkap di folder [docs/](docs/00-INDEX.md) — cocok untuk persiapan tes praktek.
+
 ## ✨ Fitur
 
 1. **Home** — halaman selamat datang + pilihan Login / Register
