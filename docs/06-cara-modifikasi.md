@@ -187,6 +187,133 @@ Jangan lupa: tambah kolom `diskon` (Skenario 1/8) + input di form + tampilkan di
 
 ---
 
+## 🔧 Skenario 11: Menghapus Sesuatu (kolom / menu / fitur)
+
+**Hapus kolom dari tabel** (buat migrasi baru biar data lain aman):
+```bash
+php artisan make:migration hapus_kolom_alamat_dari_transaksis --table=transaksis
+```
+```php
+public function up(): void {
+    Schema::table('transaksis', fn (Blueprint $t) => $t->dropColumn('alamat'));
+}
+```
+Lalu `php artisan migrate`. Setelah itu hapus juga: `alamat` dari `$fillable` (model),
+validasinya (controller), input di form, dan tampilannya di view.
+
+**Hapus menu:** hapus baris `<a>` di sidebar + route di `web.php` + (opsional) controller & view-nya.
+
+---
+
+## 🔧 Skenario 12: Dropdown yang Mengambil Data dari Tabel Lain (relasi)
+
+Contoh: di form transaksi mau pilih **petugas** dari tabel `karyawans`.
+
+1. **Migrasi**: tambah FK `$table->foreignId('karyawan_id')->nullable()->constrained();`
+2. **Model** `Transaksi`: tambah `karyawan_id` ke `$fillable` + relasi:
+   ```php
+   public function karyawan(): BelongsTo { return $this->belongsTo(Karyawan::class); }
+   ```
+3. **Controller** `create()`/`edit()`: kirim daftar karyawan ke view:
+   ```php
+   $karyawans = Karyawan::orderBy('nama')->get();
+   return view('transaksi.create', compact('layanans', 'karyawans'));
+   ```
+4. **Form** (`_form.blade.php`): dropdown-nya:
+   ```blade
+   <select name="karyawan_id" class="form-select">
+       <option value="">-- Pilih Petugas --</option>
+       @foreach ($karyawans as $k)
+           <option value="{{ $k->id }}" @selected(old('karyawan_id', $transaksi->karyawan_id ?? '') == $k->id)>
+               {{ $k->nama }}
+           </option>
+       @endforeach
+   </select>
+   ```
+5. **Validasi**: `'karyawan_id' => ['nullable', 'exists:karyawans,id'],`
+6. **Tampilkan**: `{{ $transaksi->karyawan->nama ?? '-' }}` (pakai relasi).
+
+> Ini persis pola dropdown **layanan** yang sudah ada — tinggal tiru.
+
+---
+
+## 🔧 Skenario 13: Mengubah Format Tampilan (Tanggal & Rupiah)
+
+Semua dilakukan di **view** (Blade), tidak perlu sentuh database.
+
+- **Tanggal:** `{{ $transaksi->tanggal_masuk->format('d/m/Y') }}` → ubah polanya:
+  `'d-m-Y'` (21-06-2026), `'d M Y'` (21 Jun 2026), `->translatedFormat('d F Y')` (21 Juni 2026).
+- **Rupiah:** `Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}` → hasil `Rp 75.000`.
+  - arg ke-2 = jumlah angka desimal, ke-3 = pemisah desimal, ke-4 = pemisah ribuan.
+
+---
+
+## 🔧 Skenario 14: Mengubah Urutan & Jumlah Per Halaman
+
+Di **controller** `index()`:
+```php
+Transaksi::latest()->paginate(10);            // urut terbaru, 10 per halaman
+// ganti urutan:
+Transaksi::orderBy('nama_pelanggan')->paginate(25);   // urut nama A-Z, 25 per halaman
+Transaksi::orderBy('total_harga', 'desc')->paginate(10); // termahal dulu
+```
+- `latest()` = terbaru dulu. `oldest()` = terlama dulu. `orderBy('kolom', 'asc'/'desc')` = bebas.
+
+---
+
+## 🔧 Skenario 15: Upload Gambar/Foto (mis. foto karyawan)
+
+1. **Migrasi**: `$table->string('foto')->nullable();` (simpan nama file-nya saja).
+2. **`$fillable`**: tambah `'foto'`.
+3. **Form**: tambah `enctype` + input file:
+   ```blade
+   <form method="POST" action="..." enctype="multipart/form-data">
+       <input type="file" name="foto" class="form-control" accept="image/*">
+   ```
+4. **Controller** `store()`:
+   ```php
+   if ($request->hasFile('foto')) {
+       $data['foto'] = $request->file('foto')->store('karyawan', 'public');
+   }
+   ```
+5. **Sekali saja:** `php artisan storage:link` (biar file di storage bisa diakses publik).
+6. **Tampilkan:** `<img src="{{ asset('storage/' . $kar->foto) }}" width="60">`
+
+---
+
+## 🧭 PETA KEPUTUSAN — "Mau ubah X, sentuh file mana?"
+
+| Mau ubah... | Sentuh file |
+|-------------|-------------|
+| Struktur tabel (kolom) | `database/migrations/...` |
+| Kolom boleh diisi | `app/Models/<Nama>.php` → `$fillable` |
+| Aturan input | Controller → `validate()` / `validateData()` |
+| Logika hitung/proses | Controller (fungsi `store`/`update`) |
+| Otomatisasi rak | `app/Observers/TransaksiObserver.php` |
+| Daftar URL/menu | `routes/web.php` |
+| Tampilan halaman | `resources/views/.../*.blade.php` |
+| Menu sidebar | `resources/views/layouts/app.blade.php` |
+| Data awal | `database/seeders/DatabaseSeeder.php` |
+| Nama app / koneksi DB | `.env` |
+| Warna/CSS global | `<style>` di `layouts/app.blade.php` |
+
+---
+
+## 🌟 PRINSIP UNIVERSAL (biar bisa ubah APAPUN, walau gak ada di daftar)
+
+Tiap permintaan ubahan, tanya 3 hal ini ke diri sendiri:
+
+1. **Ini soal DATA atau TAMPILAN?**
+   - Cuma tampilan (warna, teks, format, urutan, kolom yang ditampilkan) → **cukup edit view/controller**, TIDAK perlu migrasi.
+   - Ada data/kolom baru → ikut **"aturan emas 5 langkah"** (migrasi → fillable → validasi → form → tampilan).
+2. **Ini di LAYER mana?** Cocokkan dengan tabel **Peta Keputusan** di atas.
+3. **Apakah perlu jalankan perintah?** Kalau ubah struktur tabel → `migrate`. Kalau ubah `.env` → `config:clear`. Kalau view gak update → `view:clear`.
+
+> 🎯 Dengan 3 pertanyaan ini, **tindakan apa pun** bisa kamu pecah jadi langkah-langkah yang sudah
+> kamu kuasai. Tidak ada modifikasi yang "baru" — semua kombinasi dari pola yang sama.
+
+---
+
 ## ⚡ Perintah yang Wajib Hafal saat Ngoding
 
 | Perintah | Kapan dipakai |
