@@ -5,6 +5,9 @@ betul setiap baris dan siap kalau dites untuk **mengubah-ubah** web-nya langsung
 
 > Target pembaca: pemula yang belum pernah/baru kenal Laravel.
 
+> 🌱 **BUKAN ANAK IT / ORANG AWAM?** Mulai dari [08-penjelasan-mudah.md](08-penjelasan-mudah.md) dulu —
+> versi paling gampang, pakai perumpamaan + kalimat siap pakai buat presentasi. Baru lanjut ke file lain.
+
 ---
 
 ## 🗺️ Urutan Belajar (baca berurutan)
@@ -19,6 +22,7 @@ betul setiap baris dan siap kalau dites untuk **mengubah-ubah** web-nya langsung
 | 5 | [05-bedah-fitur.md](05-bedah-fitur.md) | Bedah tiap fitur (auth, transaksi, rak, dst) baris per baris |
 | 6 | [06-cara-modifikasi.md](06-cara-modifikasi.md) | **Skenario ubah-ubah web (paling penting buat tes praktek)** |
 | 7 | [07-latihan-soal.md](07-latihan-soal.md) | Bank soal + jawaban + latihan |
+| 8 | [08-penjelasan-mudah.md](08-penjelasan-mudah.md) | 🌱 **Versi orang awam** — perumpamaan + kalimat siap pakai (mulai dari sini kalau bukan anak IT) |
 
 ---
 
